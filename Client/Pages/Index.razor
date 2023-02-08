@@ -1,9 +1,8 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+@using Page = BlazorApp.Links.Home
+<PageTitle>@Page.Title</PageTitle>
 
-<ul>
-	<li>AccountName: @AccountName</li>
-	<li>AccountKey: @AccountKey</li>
-	<li>TableEndpoint: @TableEndpoint</li>
-</ul>
+<div class="pb-2 mt-4 mb-4 border-bottom">
+	<h1><i class="@Page.Icon"></i> @Page.Title</h1>
+</div>

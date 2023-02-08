@@ -1,0 +1,49 @@
+﻿@page "/Scriptures"
+
+@using Page = BlazorApp.Links.Scripture
+<PageTitle>@Page.Title</PageTitle>
+
+<div class="pb-2 mt-4 mb-4 border-bottom">
+	<h1><i class="@Page.Icon"></i> @Page.Title</h1>
+</div>
+
+@*<AppSettings/>*@
+<h5>PartitionKey: @PartitionKey</h5>
+
+@switch (_status)
+{
+	case Status.Loading:
+		<h4 class="text-info">Loading Data</h4>
+		break;
+
+	case Status.Loaded:
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Partition Key</th>
+					<th>Row Key</th>
+					<th>KJV</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var entity in ScriptureList!)
+				{
+					<tr>
+						<td>@entity.PartitionKey</td>
+						<td>@entity.RowKey</td>
+						<td>@entity.KJV</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		break;
+
+	case Status.Error:
+		<h4 class="text-danger mt-5">Error no data gotten</h4>
+		<p class="">Error...</p>
+		<p class="p-2">@_msg</p>
+		break;
+
+	default:
+		break;
+}

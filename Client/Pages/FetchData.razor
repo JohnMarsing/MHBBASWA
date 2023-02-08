@@ -1,52 +1,48 @@
 ﻿@page "/fetchdata"
-@using BlazorApp.Shared 
-@inject HttpClient Http
+@using BlazorApp.Shared
+
 
 <h1>Weather forecast</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+@switch (_status)
 {
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+	case Status.Loading:
+		<h4 class="text-info">Loading Data</h4>
+		break;
+
+	case Status.Loaded:
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Date</th>
+					<th>Temp. (C)</th>
+					<th>Temp. (F)</th>
+					<th>Summary</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (var forecast in forecasts)
+				{
+					<tr>
+						<td>@forecast.Date.ToShortDateString()</td>
+						<td>@forecast.TemperatureC</td>
+						<td>@forecast.TemperatureF</td>
+						<td>@forecast.Summary</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+		break;
+
+	case Status.Error:
+		<h4 class="text-danger mt-5">Error no data gotten</h4>
+		<p class="">Error...</p>
+		<p class="p-2">@_msg</p>
+		break;
+
+	default:
+		break;
 }
 
-@code {
-    private WeatherForecast[] forecasts = new WeatherForecast[]{};
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("/api/WeatherForecast") ?? new WeatherForecast[]{};
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.ToString());
-        }
-    }
-}

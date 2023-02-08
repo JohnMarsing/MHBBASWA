@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.Linq;
 using System.Net;
 using BlazorApp.Shared;
@@ -15,11 +17,14 @@ public class HttpTrigger
 	public HttpTrigger(ILoggerFactory loggerFactory)
 	{
 		_logger = loggerFactory.CreateLogger<HttpTrigger>();
+		_logger.LogInformation("Inside ctor of HttpTrigger");
 	}
 
 	[Function("WeatherForecast")]
 	public HttpResponseData Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData req)
 	{
+		string inside = $"Inside {nameof(HttpTrigger)}!{nameof(Run)}";
+		_logger.LogInformation(string.Format("{0}", inside));
 		var randomNumber = new Random();
 		var temp = 0;
 
