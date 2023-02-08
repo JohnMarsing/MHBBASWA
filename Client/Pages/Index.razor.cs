@@ -11,6 +11,8 @@ public partial class Index
 	protected string? AccountKey { get; set; }  = string.Empty;
 	protected string? TableEndpoint { get; set; } = string.Empty;
 	
+
+
 	protected override void OnInitialized()
 	{
 		AccountName = configuration!["AccountName"];
