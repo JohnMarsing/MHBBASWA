@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>BlazorApp.Client</RootNamespace>
+    <UserSecretsId>e5c090a1-26ed-404f-bedf-609e51c66034</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
