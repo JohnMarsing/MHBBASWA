@@ -1,7 +1,8 @@
-﻿using Azure;
-using Azure.Data.Tables;
+﻿using Azure.Data.Tables;
+using Azure;
+using System;
 
-namespace BlazorApp.Client.Pages;
+namespace Api;
 
 public class ScriptureTS : ITableEntity
 {

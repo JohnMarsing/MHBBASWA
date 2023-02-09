@@ -1,17 +1,15 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Azure.Data.Tables;
-using Azure;
-using Microsoft.Extensions.Logging;
+using BlazorApp.Shared;
+using System.Net.Http.Json;
 
 namespace BlazorApp.Client.Pages;
 
 public partial class Scripture
 {
-	[Inject]
-	public ILogger<Scripture>? Logger { get; set; }
+	[Inject] public HttpClient Http { get; set; }
+	[Inject] public ILogger<Scripture>? Logger { get; set; }
 
-
-	private List<ScriptureTS>? ScriptureList;
+	private List<ScriptureVM>? ScriptureList;
 
 	private const string AzureStorageTableName = "scripture0003";
 	private const string PartitionKey = "gen001";
@@ -21,45 +19,25 @@ public partial class Scripture
 
 	protected override async Task OnInitializedAsync()
 	{
-		await GetByPartitionKey(PartitionKey, "001");
-	}
-
-	public async Task GetByPartitionKey(string partitionKey, string key)
-	{
-		string inside = $"Inside {nameof(Scripture)}!{nameof(GetByPartitionKey)}; partitionKey:{partitionKey}; Table: {AzureStorageTableName}";
-		Logger!.LogInformation(string.Format("{0}", inside));
 		try
 		{
 			_status = Status.Loading;
+			Logger!.LogInformation("...Calling Http.GetFromJsonAsync");
 
-			Logger!.LogInformation("...Calling GetTableClient");
-			TableClient tableClient = await GetTableClient(AzureStorageTableName);
-
-			Logger!.LogInformation("...Setting qry to use PartitionKey filter");
-			Pageable<ScriptureTS> qry = tableClient.Query<ScriptureTS>
-				(filter: TableClient.CreateQueryFilter($"PartitionKey eq {partitionKey}"));
-
-			Logger!.LogInformation("...Setting =ScriptureList = qry.ToList()");
-			ScriptureList = qry.ToList();
+			await Task.Delay(0);
+			//ScriptureList = await Http.GetFromJsonAsync<List<ScriptureVM>>("/api/Scripture") ?? new List<ScriptureVM> { };
+			//_msg = await Http.GetFromJsonAsync<string>("/api/ScriptureFunction") { };
+			//_msg = await Http.GetStringAsync<HelloWorld>("/api/ScriptureFunction");
+			//_msg = await Http.GetFromJsonAsync<HelloWorld>("/api/ScriptureFunction");
+			//_msg = await Http.GetAsync("/api/ScriptureFunction");
 			_status = Status.Loaded;
 		}
 		catch (Exception ex)
 		{
 			_status = Status.Error;
-			_msg = ex.Message;
+			_msg = ex.ToString();
 			Logger!.LogError(ex, "...Exception occurred");
 		}
-
 	}
-
-	private static async Task<TableClient> GetTableClient(string? tableName)
-	{
-		//ExtractConnectionString.GetByType(ConnectionStringType.TableStorage);
-		string connectionString = "DefaultEndpointsProtocol=https;AccountName=myhebrewbible5;AccountKey=noTx48U+Dv0xb+V/LzgxrGO/MYlkgfIKbc51J4NpfPJug/C/EGnXvay6matKnKATee5EWepTevPMzLggDz4Rhw==;TableEndpoint=https://myhebrewbible5.table.core.windows.net/;";
-		TableServiceClient tableServiceClient = new TableServiceClient(connectionString);
-		var tableClient = tableServiceClient.GetTableClient(tableName);
-		await tableClient.CreateIfNotExistsAsync();
-		return tableClient;
-	}
-
 }
+
